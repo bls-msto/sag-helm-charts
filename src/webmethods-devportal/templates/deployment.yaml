@@ -182,7 +182,12 @@ spec:
             - name: PORTAL_SERVER_CONFIG_LICENSE
               value: /opt/softwareag/licenseKey.xml
             {{- end }}
-            {{- include "webmethods-devportal.dpo_endpoints_envs" . | indent 12 }}
+            {{- if .Values.settings.clustering.enabled }}
+            - name: PORTAL_SERVER_CACHE_DISTRIBUTED_ENABLED
+              value: "true"
+            - name: "PORTAL_SERVER_CACHE_DISTRIBUTED_CLUSTER_PEERS_0"
+              value: "{{ include "webmethods-devportal.fullname.headless" . }}:47500..47509"
+            {{- end }}
             {{- with .Values.settings.envConfigs }}
             {{- include "webmethods-devportal.dictToEnvs" . | indent 12 }}
             {{- end }}
